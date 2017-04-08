@@ -11,10 +11,12 @@ public class Brad60 {
 		try {
 			ObjectInputStream oin = new ObjectInputStream(new FileInputStream("./dir1/brad.object"));
 			Object obj1 = oin.readObject();
+			Object obj2 = oin.readObject();
 			oin.close();
 			Student s1 = (Student)obj1;
-			System.out.println(s1.sum());
-			System.out.println(s1.avg());
+			Student s2 = (Student)obj2;
+			System.out.println(s1.getName() + ":" +s1.sum() + ":" + s1.avg());
+			System.out.println(s2.getName() + ":" +s2.sum() + ":" + s2.avg());
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
