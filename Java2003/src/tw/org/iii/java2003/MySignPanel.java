@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import javax.swing.JPanel;
 
 public class MySignPanel extends JPanel{
-	private LinkedList<LinkedList<HashMap<String,Integer>>> lines;
+	private LinkedList<LinkedList<HashMap<String,Integer>>> lines, recycle;
 	
 	public MySignPanel(){
 		setBackground(Color.YELLOW);
@@ -22,6 +22,7 @@ public class MySignPanel extends JPanel{
 		addMouseMotionListener(listener);
 		
 		lines = new LinkedList<>(); 
+		recycle = new LinkedList<>();
 		
 	}
 	// 1. mouse event, 2. data structure, 3. draw
@@ -35,6 +36,7 @@ public class MySignPanel extends JPanel{
 		g2d.setStroke(new BasicStroke(4));
 		
 		for(LinkedList<HashMap<String,Integer>> line : lines){
+			
 			for (int i=1; i<line.size(); i++){
 				HashMap<String,Integer> p0 = line.get(i-1);
 				HashMap<String,Integer> p1 = line.get(i);
@@ -44,10 +46,33 @@ public class MySignPanel extends JPanel{
 			}
 		}
 	}
+	
+	public void clear(){
+		lines.clear();
+		repaint();
+	}
+	
+	public void undo(){
+		if (lines.size()>0){
+			recycle.add(lines.removeLast());
+			repaint();
+		}
+	}
+	
+	public void redo(){
+		if(recycle.size()>0){
+			lines.add(recycle.removeLast());
+			repaint();
+		}
+	}
+	
 	private class MyMouseListener extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			super.mousePressed(e);
+			// draw a new line
+			recycle.clear();
+			
 			LinkedList<HashMap<String,Integer>> line = new LinkedList<>();
 			
 			HashMap<String,Integer> point = new HashMap<>();
@@ -65,6 +90,7 @@ public class MySignPanel extends JPanel{
 			point.put("y", e.getY());
 			lines.getLast().add(point);
 			repaint();
+			
 		}
 	}
 }
