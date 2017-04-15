@@ -13,6 +13,7 @@ public class Racing extends JFrame {
 	private JLabel[] lanes = new JLabel[8];
 	private Car[] cars = new Car[8];
 	private int rank;
+	private boolean isRunning;
 
 	public Racing(){
 		super("Racing Game");
@@ -38,18 +39,28 @@ public class Racing extends JFrame {
 	}
 	
 	private void go(){
-		rank = 1;
-		for (int i=0; i<lanes.length; i++){
-			lanes[i].setText((i+1) + ". ");
-		}
-		for (int i=0; i<cars.length; i++){
-			cars[i] = new Car(i);
-		}
-		for (int i=0; i<cars.length; i++){
-			cars[i].start();
+		if (!isRunning){
+			isRunning = true;
+			rank = 1;
+			for (int i=0; i<lanes.length; i++){
+				lanes[i].setText((i+1) + ". ");
+			}
+			for (int i=0; i<cars.length; i++){
+				cars[i] = new Car(i);
+			}
+			for (int i=0; i<cars.length; i++){
+				cars[i].start();
+			}
 		}
 	}
 
+	private void stopGame(){
+		for (Car car : cars){
+			car.interrupt();
+		}
+		isRunning = false;
+	}
+	
 	private class Car extends Thread {
 		private int lane;
 		Car(int lane){this.lane=lane;}
@@ -60,9 +71,11 @@ public class Racing extends JFrame {
 				try {
 					Thread.sleep(10 + (int)(Math.random()*200));
 				} catch (InterruptedException e) {
+					return;
 				}
 			}
-			lanes[lane].setText(lanes[lane].getText() + rank++);
+			lanes[lane].setText(lanes[lane].getText() + "==> WINNER");
+			stopGame();
 		}
 	}
 	
